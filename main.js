@@ -5,7 +5,11 @@
   const inputB = document.querySelector('#inB')
   const playBtn = document.querySelector('#play')
   const pauseBtn = document.querySelector('#pause')
-  const chart = createChart();
+
+  const chart = createChart((x) => {
+    videoB.currentTime = x;
+    videoA.currentTime = x;
+  });
 
   playBtn.addEventListener('click', () => {
     videoB.currentTime = videoA.currentTime;
@@ -28,15 +32,23 @@ function onTick(chart, videoElem) {
   setTimeout(() => onTick(chart, videoElem), 500)
 }
 
-function createChart() {
+function createChart(onClick) {
   return Highcharts.chart('chart-container', {
     title: { text: "Data" },
     plotOptions: {
-        series: {
-            label: {
-                connectorAllowed: false
-            },
+      series: {
+        label: {
+          connectorAllowed: false
+        },
+        point: {
+          events: {
+            click: function(e) {
+              console.log(e)
+              onClick(e.point.x)
+            }
+          }
         }
+      }
     },
     yAxis: [
       { title: { text: 'Heart Rate'} },
@@ -65,6 +77,21 @@ function createChart() {
       {
         name: 'AU12_r',
         data: window.d_AU12_r,
+        yAxis: 1,
+      },
+      {
+        name: 'AU15_r',
+        data: window.d_AU15_r,
+        yAxis: 1,
+      },
+      {
+        name: 'AU04_r',
+        data: window.d_AU04_r,
+        yAxis: 1,
+      },
+      {
+        name: 'AU01_r',
+        data: window.d_AU01_r,
         yAxis: 1,
       },
     ],
