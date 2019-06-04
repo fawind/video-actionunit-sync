@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+  <link rel="stylesheet" type="text/css" href="main.css">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/data.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="col">
+      <div class="row">
+        <input id="inA" type="file" accept="video/*" class="button" />
+      </div>
+      <div class="row">
+        <video id="vidA" controls></video>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="row">
+        <input id="inB" type="file" accept="video/*" class="button" />
+      </div>
+      <div class="row">
+        <video id="vidB" controls></video>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="play" class="button is-success">Play</button>
+    <button id="pause" class="button is-danger">Pause</button>
+  </div>
+
+  <div id="chart-container"></div>
+
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
