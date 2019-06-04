@@ -34,7 +34,7 @@ function onTick(chart, videoElem) {
 
 function createChart(onClick) {
   return Highcharts.chart('chart-container', {
-    title: { text: "Data" },
+    title: { text: "" },
     plotOptions: {
       series: {
         label: {
