@@ -1,16 +1,15 @@
 (function main() {
-  const videoA = document.querySelector('#vidA')
-  const videoB = document.querySelector('#vidB')
-  const inputA = document.querySelector('#inA')
-  const inputB = document.querySelector('#inB')
-  const playBtn = document.querySelector('#play')
-  const pauseBtn = document.querySelector('#pause')
+  const videoA = document.querySelector('#vidA');
+  const videoB = document.querySelector('#vidB');
+  const inputA = document.querySelector('#inA');
+  const inputB = document.querySelector('#inB');
+  const playBtn = document.querySelector('#play');
+  const pauseBtn = document.querySelector('#pause');
+  const loadDataBtn = document.querySelector('#load-data');
 
-  const chart = createChart((x) => {
-    videoB.currentTime = x;
-    videoA.currentTime = x;
-  });
+  const chart = createChart(data_x => onChartClick(data_x, [videoA, videoB]));
 
+  loadDataBtn.addEventListener('click', () => loadData(chart));
   playBtn.addEventListener('click', () => {
     videoB.currentTime = videoA.currentTime;
     videoA.play();
@@ -22,9 +21,13 @@
     videoB.currentTime = videoA.currentTime;
   });
 
-  addVideoLoad(videoA, inputA, () => onTick(chart, videoA));
-  addVideoLoad(videoB, inputB, () => {});
+  addVideoEventListener(videoA, inputA, () => onTick(chart, videoA));
+  addVideoEventListener(videoB, inputB, () => {});
 })()
+
+function onChartClick(data_x, videos) {
+  videos.forEach(video => video.currentTime = data_x);
+}
 
 function onTick(chart, videoElem) {
   chart.xAxis[0].options.plotLines[0].value = videoElem.currentTime;
@@ -38,75 +41,56 @@ function createChart(onClick) {
     plotOptions: {
       series: {
         label: {
-          connectorAllowed: false
+          connectorAllowed: false,
         },
         point: {
           events: {
-            click: function(e) {
-              console.log(e)
-              onClick(e.point.x)
-            }
-          }
-        }
-      }
+            click: e => onClick(e.point.x),
+          },
+        },
+      },
     },
     yAxis: [
       { title: { text: 'Heart Rate'} },
       { title: { text: 'Action Units'} },
     ],
     xAxis: {
-      plotLines: [{
-        color: 'red',
-        dashStyle: 'longdashdot',
-        value: 0,
-        width: 2,
-      }],
+      plotLines: [
+        {
+          color: 'red',
+          dashStyle: 'longdashdot',
+          value: 0,
+          width: 2,
+        },
+      ],
     },
-    series: [
-      {
-        name: 'Heart Rate',
-        data: window.d_heartrate,
-        yAxis: 0,
-        color: 'red',
-      },
-      {
-        name: 'AU06_r',
-        data: window.d_AU06_r,
-        yAxis: 1,
-      },
-      {
-        name: 'AU12_r',
-        data: window.d_AU12_r,
-        yAxis: 1,
-      },
-      {
-        name: 'AU15_r',
-        data: window.d_AU15_r,
-        yAxis: 1,
-      },
-      {
-        name: 'AU04_r',
-        data: window.d_AU04_r,
-        yAxis: 1,
-      },
-      {
-        name: 'AU01_r',
-        data: window.d_AU01_r,
-        yAxis: 1,
-      },
-    ],
+    series: [],
   });
 }
 
-function addVideoLoad(videoNode, inputNode, cb) {
-  const URL = window.URL || window.webkitURL
-  const playSelectedFile = function (event) {
-    const file = this.files[0]
+function addVideoEventListener(video, inputBtn, cb) {
+  inputBtn.addEventListener('change', () => {
+    const URL = window.URL || window.webkitURL
+    const file = inputBtn.files[0]
     const fileURL = URL.createObjectURL(file)
-    videoNode.src = fileURL
+    video.src = fileURL
     cb()
-  }
+  }, false)
+}
 
-  inputNode.addEventListener('change', playSelectedFile, false)
+function loadData(chart) {
+  measurements = JSON.parse(prompt("Please enter the measurements JSON dump:"))
+  console.log(measurements)
+  chart.addSeries({
+    name: 'Heart Rate',
+    data: measurements.heartRate.data,
+    yAxis: 0,
+    color: 'red',
+  }, true);
+  measurements.actionUnits.forEach(unit => chart.addSeries({
+      name: unit.name,
+      data: unit.data,
+      yAxis: 1,
+  }));
 }
 

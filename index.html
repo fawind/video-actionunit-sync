@@ -5,7 +5,6 @@
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
   <link rel="stylesheet" type="text/css" href="main.css">
   <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/modules/data.js"></script>
 </head>
 <body>
   <div class="container">
@@ -32,10 +31,12 @@
     <button id="play" class="button is-success">Play</button>
     <button id="pause" class="button is-danger">Pause</button>
   </div>
+  <div class="controls">
+    <button id="load-data" class="button">Load Data</button>
+  </div>
 
   <div id="chart-container"></div>
 
-  <script src="data.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
